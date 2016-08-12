@@ -1,0 +1,60 @@
+<html>
+	<head>
+		<meta http-equiv=Content-Type content="text/html;charset=utf-8">
+		<title>最佳女友</title>
+		<script type="text/javascript" src="static/js/jquery.min.js"></script>
+		<script type="text/javascript" src="static/js/typed.js"></script>
+		<script type="text/javascript">
+		$(function() {
+			setTimeout(function() {
+				$('.box').show();
+				$("#wait").hide();
+			}, 5000);
+			$(".box").typed({
+				startDelay: 5000,
+				stringsElement: $('#typed-strings'),
+				typeSpeed: 100,
+				callback: function() {
+					$("audio").attr("autoplay", "autoplay");
+				}
+        	});	
+		});
+		</script>
+		<style type="text/css">
+		body {
+			margin: 0px;
+			padding: 0px;
+			font-size: 48px;
+		}
+		.box {
+			display: none;
+			width: 824px;
+			height: 450px;
+			margin: 0px auto;
+			background-image:url('static/img/lxm.jpg');
+			background-position: -20px;
+			padding-top: 180px;
+			padding-left: 100px;
+			padding-right: 100px;
+		}
+		.name {
+			color: red;	
+			padding-left: 100px;
+			padding-right: 30px;
+		}
+		</style>
+	</head>
+	<body>
+		<div id="typed-strings" style="display:none">
+			<p style="padding-top: 50px;"><em class="name">吕勋梅</em>童鞋荣获2015年度“中国好女友”荣誉称号。
+			<span style="display:block; margin-left: 100px;">特发此证，以资鼓励。</span>
+			<span style="display:block; margin-left: 530px;margin-top: 30px;">颁发人:奇奇</span>
+			<span style="display:block; margin-left: 530px;">2016-02-24</span>
+			</p>
+		</div>
+		<div class="box">
+		</div>
+<audio src="static/other/zhangsheng.wav" controls="controls" style="display: none" preload="preload"></audio>
+<div id="wait" style="text-align:center">加载中，稍等片刻</div>
+	</body>
+</html>

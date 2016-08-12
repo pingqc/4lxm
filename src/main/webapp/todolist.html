@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TODO LIST</title>
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            width: 100%;
+            min-height: 10%;
+            max-height: 10%;
+            height: 10%;
+            position: absolute;
+            top: 0%;
+            background: #000;
+            z-index: 2;
+        }
+        .header input {
+            height: 100%;
+            padding-left: 10px;
+            margin: 0;
+            border: transparent;
+            width: 100%;
+            font-size: 24px;
+        }
+        .list-box {
+            width: 50%;
+            min-height: 90%;
+            max-height: 90%;
+            height: 90%;
+            position: absolute;
+            top: 10%;
+            bottom: 0;
+            overflow: auto;
+        }
+        .todo {
+            float: left;
+            background-color: #dff0d8;
+        }
+        .done {
+            margin-left: 50%;
+            background-color: darkseagreen;
+        }
+        .list-box .item {
+            width: 100%;
+            height: 40px;
+            background-color: rgba(104, 221, 192, 0.24);
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            border-bottom: 1px dotted rgba(68, 221, 53, 0.49);
+        }
+        .list-box .item > span {
+            line-height: 2.5;
+            padding-left: 20px;
+        }
+        .list-box .item > a {
+            border: 1px solid red;
+            text-decoration: none;
+            color: #000;
+            float: right;
+            margin-right: 10px;
+            display: inline-block;
+            height: 100%;
+        }
+        .list-box .item .del {
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            -o-transform: rotate(45deg);
+            transform: rotate(45deg);
+            line-height: 3.5;
+            width: 80px;
+            height: 40px;
+            text-align: center;
+            position: absolute;
+            top: -12px;
+            right: -36px;
+            background: orange;
+            display: none;
+        }
+        .list-box .item:hover .del {
+            display: block;
+        }
+    </style>
+    <script type="text/javascript" src="static/js/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+
+            var $todo = $(".todo");
+            var $done = $(".done");
+            var $input = $('input');
+            function load() {
+                $.get('todo/data', function(data) {
+                    $todo.empty();
+                    $done.empty();
+
+                    for (var i = 0; i < data.length; i++) {
+                        var item = data[i];
+
+                        var $item = $('<div class="item">'+
+                                        '<span>'+item.content+'</span>'+
+                                        '<div class="del">+</div>'+
+                                      '</div>');
+                        $item.data('data', item);
+
+                        if (item.status === 0) { // TodoItem
+                            $todo.append($item);
+                        } else if (item.status === 1) { // DoneItem
+                            $done.append($item);
+                        }
+                    }
+
+                });
+            }
+
+            $('.list-box').on('click', '.item', function(e) {
+                var $this = $(this);
+                var item = $this.data('data');
+                var oper;
+                if (item.status === 0) {
+                    oper = 'finish';
+                } else {
+                    oper = 'unfinish';
+                }
+                $.post('todo/'+oper+'/' + item.id, function (data) {
+                    $this.data('data', data);
+                    if (oper === 'finish') {
+                        $this.appendTo($done);
+                    } else {
+                        $this.appendTo($todo);
+                    }
+                });
+            }).on('click', '.item .del', function(e) {
+                e.stopPropagation();
+                var $item = $(this).closest('.item');
+                var item = $item.data('data');
+                $.post('todo/cancel/' + item.id, function(data) {
+                    $item.remove();
+                });
+            });
+
+            $('input').keyup(function(e) {
+                if (e.keyCode !== 13) {
+                    return;
+                }
+                $.post('todo/add', {
+                    content: $input.val()
+                }, function(data) {
+                    $input.val('');
+                    load();
+                });
+            });
+
+            (function init() {
+                load();
+                $('input').focus();
+            })()
+        });
+    </script>
+</head>
+<body>
+<div class="header">
+    <input type="text" placeholder="输入内容，回车添加" maxlength="100"/>
+</div>
+<div class="list-box todo"></div>
+<div class="list-box done">
+<!--    <div class="item">
+        <span>desc</span>
+        <div class="del">+</div>
+    </div>-->
+</div>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!-- HTTP 1.1 -->  
+<meta http-equiv="pragma" content="no-cache">
+<!-- HTTP 1.0 -->  
+<meta http-equiv="cache-control" content="no-cache">
+<title>梅子专属</title>
+<link rel="stylesheet" href="static/bootstrap-3.3.5/css/bootstrap.min.css" />
+<link rel="stylesheet" href="static/Font-Awesome-3.2.1/css/font-awesome.css" />
+<link rel="stylesheet" href="static/css/main.css" />
+</head>
+<body>
+	<div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 weather-box">
+            </div>
+            <div class="col-md-6 search-box">
+                <form method="get" target="_blank" action="http://www.baidu.com/s" class="form-inline" style="margin-top: 10px;">
+                    <div class="form-group">
+                        <div class="col-md-10">
+                            <input type="text" id="wd" name="wd" class="form-control input-lg" />
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-success btn-lg">百度一下</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-offset-1 col-md-10 nav-box">
+				<div class="btn-bar">
+					<button id="addNavBtn" class="btn btn-success" title="添加一个常用网址">
+						<span class="icon-2x icon-plus"></span>
+					</button>
+					<button id="editNavBtn" class="btn btn-success" title="进入编辑模式">
+						<span class="icon-2x icon-edit"></span>
+					</button>
+
+				</div>
+	        </div>
+   		</div>
+
+		<!-- Modal -->
+		<div class="modal fade" id="addNavModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<div class="form-group">
+								<div class="col-sm-12">
+									<input type="hidden" name="id">
+									<input type="url" name="url" class="form-control" placeholder="网址(http://www.example.com)">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-12 col-md-6">
+									<input type="text" name="name" class="form-control" placeholder="名称">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-12">
+									<input type="text" name="ico" class="form-control" placeholder="图标(http://www.example.com/favicon.ico)">
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-6">
+									<input type="text" name="type" class="form-control" placeholder="分类"/>
+								</div>
+								<label class="col-sm-2 control-label">常用</label>
+								<div class="col-sm-4">
+									<select name="types" class="form-control">
+										<option value="剁手">剁手</option>
+										<option value="视频">视频</option>
+										<option value="嘿嘿">嘿嘿</option>
+										<option value="工作">工作</option>
+									</select>
+								</div>
+							</div>
+							<div class="text-right">
+								<button type="button" class="btn btn-success" id="saveNavBtn">保存</button>
+								<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+
+   	</div>
+
+	<script type="text/javascript" src="static/js/jquery.min.js"></script>
+	<script type="text/javascript" src="static/js/moment.js"></script>
+	<script type="text/javascript" src="static/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			$('.weather-box').html('<iframe name="weather_inc" src="http://i.tianqi.com/index.php?c=code&id=9" width="500" height="60" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe>');
+
+			/**
+			 * 更新
+			 * @param siteInfo
+			 */
+			function updateNavInfo(siteInfo) {
+				var $item = $("#nav-" + siteInfo.id);
+				var $link = $item.children('a');
+				$link.attr('href', siteInfo.url)
+						.css('background-image', 'url('+siteInfo.ico+')');
+				$link.children('span').text(siteInfo.name);
+			}
+
+			function loadNav() {
+				$.get('website/data', function (data) {
+					var now = moment();
+
+					var $box = $('.nav-box');
+					$box.find('.clear-both, .nav-item').remove();
+					var preType = "";
+
+					// 保存网址类型
+					var types = [];
+
+					for (var i = 0; i < data.length; i++) {
+						if (preType !== data[i].type) {
+							types.push(data[i].type);
+							preType = data[i].type;
+							$('<div class="clear-both"></div><p class="h5">'+data[i].type+'</p>').appendTo($box);
+						}
+
+						var d = now.diff(moment(data[i].createTime), 'days');
+						var newItemClass = (d > 7) ? '' : 'nav-item-new'; // 7天以内的特别标记
+						var roItemClass = (d > 7) ? '' : 'nav-item-ro'; // readonly
+
+						var displayTxt = data[i].name;
+						if (data[i].url === 'dym.html') {
+							$.ajax({
+								url: 'dym/days',
+								async: false,
+								type: 'get',
+								success: function(data) {
+									if (data > 35) {
+										displayTxt = displayTxt + '<span class="text-red">['+data + ']</span>';
+									} else {
+										displayTxt = displayTxt + '<span>['+data + ']</span>';
+									}
+								}
+							});
+						}
+
+						var $item = $('<div id="nav-'+data[i].id+'" class="nav-item ' + newItemClass + ' '+ roItemClass +'">' +
+								'		<div class="nav-edit"><span class="icon icon-edit"></span></div>' +
+								'		<div class="nav-del"><span class="icon icon-trash"></span></div>' +
+								'		<a href="' + data[i].url + '" target="_blank" class="nav-link"' +
+								'			style="background-image:url(' + data[i].ico + ')">' +
+								'			<span>' + displayTxt + '</span>' +
+								'		</a>' +
+								'</div>');
+						$item.data('data', data[i]);
+						$item.appendTo($box);
+					}
+
+					$box.data('types', types);
+				});
+			}
+
+			$('.nav-box').on('click', '.nav-item .nav-del', function() {
+				var navInfo = $(this).closest('.nav-item').data('data');
+				if (navInfo.editable === true) {
+					alert('不准动!!!!');
+					return;
+				}
+				$.post('website/remove/' + navInfo.id, function(data) {
+					if (data.result === 'success') {
+						$("#nav-" + navInfo.id).remove();
+					} else {
+						alert('删除失败');
+					}
+				});
+			});
+			$('.nav-box').on('click', '.nav-item .nav-edit', function() {
+				var navInfo = $(this).closest('.nav-item').data('data');
+				if (navInfo.editable === true) {
+					alert('不准动!!!!');
+					return;
+				}
+				var types = $('.nav-box').data('types');
+				var $select = $('select[name=types]');
+				$select.empty();
+				$("input[name=type]").val(types[0]);
+				for (var i = 0; i < types.length; i++) {
+					$select.append('<option value="'+types[i]+'">'+types[i]+'</option>');
+				}
+				$('input[name=id]').val(navInfo.id);
+				$('input[name=name]').val(navInfo.name);
+				$('input[name=url]').val(navInfo.url);
+				$('input[name=ico]').val(navInfo.ico);
+				$('input[name=type]').val(navInfo.type);
+				$("#addNavModal").modal();
+			});
+
+			$("#addNavBtn").click(function() {
+				var types = $('.nav-box').data('types');
+				var $select = $('select[name=types]');
+				$select.empty();
+				$("input[name=type]").val(types[0]);
+				for (var i = 0; i < types.length; i++) {
+					$select.append('<option value="'+types[i]+'">'+types[i]+'</option>');
+				}
+				// 清空
+				$('input[name=id]').val('');
+				$('input[name=name]').val('');
+				$('input[name=url]').val('');
+				$('input[name=ico]').val('');
+				$('input[name=type]').val('');
+				$("#addNavModal").modal();
+			});
+
+			$("#editNavBtn").click(function() {
+				var $box = $('.nav-box');
+				if ($box.is('.edit-mode')) {
+					$box.removeClass('edit-mode');
+				} else {
+					$box.addClass('edit-mode');
+				}
+			});
+
+			$('select[name=types]').change(function() {
+				var type = $(this).val();
+				$("input[name=type]").val(type);
+			});
+			$("#saveNavBtn").click(function() {
+				var id = $('input[name=id]').val();
+				var siteInfo = {
+					id  : id,
+					url : $('input[name=url]').val(),
+					name: $('input[name=name]').val(),
+					ico : $('input[name=ico]').val(),
+					type: $('input[name=type').val()
+				}
+				if (id) { // update
+					$.post('website/update', siteInfo, function(data) {
+						if (data.result === "success") {
+							$("#addNavModal").modal('hide');
+							updateNavInfo(siteInfo);
+						} else {
+							alert('保存失败');
+						}
+					});
+				} else { // add
+					$.post('website/add', siteInfo, function(data) {
+						if (data.result === "success") {
+							$("#addNavModal").modal('hide');
+							loadNav();
+						} else {
+							alert('保存失败');
+						}
+					});
+				}
+			});
+
+			loadNav();
+		});
+	</script>
+</body>
+</html>

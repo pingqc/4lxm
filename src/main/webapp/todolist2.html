@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>TODO LIST</title>
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            width: 100%;
+            min-height: 10%;
+            max-height: 10%;
+            height: 10%;
+            position: absolute;
+            top: 0%;
+            background: #000;
+            z-index: 2;
+        }
+        .header input {
+            height: 100%;
+            padding-left: 10px;
+            margin: 0;
+            border: transparent;
+            width: 100%;
+            font-size: 24px;
+        }
+        .list-box {
+            width: 50%;
+            min-height: 90%;
+            max-height: 90%;
+            height: 90%;
+            position: absolute;
+            top: 10%;
+            bottom: 0;
+            overflow: auto;
+        }
+        .todo {
+            float: left;
+            background-color: #dff0d8;
+        }
+        .done {
+            margin-left: 50%;
+            background-color: darkseagreen;
+        }
+        .list-box .item {
+            width: 100%;
+            height: 40px;
+            background-color: rgba(104, 221, 192, 0.24);
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            border-bottom: 1px dotted rgba(68, 221, 53, 0.49);
+        }
+        .list-box .item > span {
+            line-height: 2.5;
+            padding-left: 20px;
+        }
+        .list-box .item > a {
+            border: 1px solid red;
+            text-decoration: none;
+            color: #000;
+            float: right;
+            margin-right: 10px;
+            display: inline-block;
+            height: 100%;
+        }
+        .list-box .item .del {
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            -o-transform: rotate(45deg);
+            transform: rotate(45deg);
+            line-height: 3.5;
+            width: 80px;
+            height: 40px;
+            text-align: center;
+            position: absolute;
+            top: -12px;
+            right: -36px;
+            background: orange;
+            display: none;
+        }
+        .list-box .item:hover .del {
+            display: block;
+        }
+    </style>
+
+</head>
+<body>
+<div id="test" @click="func1" style="position:relative; background-color: red">
+    <p style="position:absolute; top: -10px; left: 0;" @click="func2">asdf</p>
+    asdfsssssssssssss
+</div>
+    <div id="todoApp" style="display: none;">
+        <div class="header">
+            <input v-on:keyup.13="addTodo" v-model="newTodo" type="text" placeholder="输入内容，回车添加" maxlength="100"/>
+        </div>
+        <div class="list-box todo">
+            <div v-for="todo in todoList" class="item" v-on:click="finish($index)">
+                <span>{{todo.content}}</span>
+                <div v-on:click="remove('todo', $index)" class="del">+</div>
+            </div>
+        </div>
+        <div class="list-box done">
+            <div v-for="done in doneList" class="item" v-on:click="unfinish($index)">
+                <span>{{done.content}}</span>
+                <div v-on:click="remove('done', $index)" class="del">+</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="static/js/vue.js"></script>
+    <script type="text/javascript">
+
+        function fresh() {
+            $.get('todo/data', function(data) {
+                var todoList = [];
+                var doneList = [];
+                for (var i = 0; i < data.length; i++) {
+                    var item = data[i];
+                    if (item.status === 0) {
+                        todoList.push(item);
+                    } else {
+                        doneList.push(item);
+                    }
+                }
+                todoApp.$set('todoList', todoList);
+                todoApp.$set('doneList', doneList);
+            });
+        }
+
+        new Vue({
+            el: '#test',
+            methods: {
+                func1: function() {
+                    console.log('111');
+                },
+                func2: function() {
+                    console.log('222');
+                },
+            }
+        });
+
+        var todoApp = new Vue({
+            el: '#todoApp',
+            ready: function() {
+                fresh();
+            },
+            data: function() {
+                return {
+                    newTodo: '',
+                    todoList: [],
+                    doneList: []
+                }
+            },
+            methods: {
+                addTodo: function() {
+                    var content = this.newTodo.trim();
+                    var self = this;
+                    if (content) {
+                        $.post('todo/add', {
+                            content: content
+                        }, function(data) {
+                            self.newTodo = '';
+                            fresh();
+                        });
+                    }
+                },
+                remove: function(type, idx) {
+                    var arr;
+                    if (type === 'todo') {
+                        arr = this.todoList;
+                    } else if (type === 'done') {
+                        arr = this.doneList;
+                    } else {
+                        alert('error type:' + type);
+                        return;
+                    }
+                    var item = arr[idx];
+                    $.post('todo/cancel/' + item.id, function(data) {
+                        arr.splice(idx, 1);
+                    });
+                },
+                finish: function(idx) {
+                    var self = this;
+                    var item = self.todoList[idx];
+                    $.post('todo/finish/' + item.id, function(data) {
+                        self.todoList.$remove(item);
+                        self.doneList.push(data);
+                    })
+                },
+                unfinish: function(idx) {
+                    var self = this;
+                    var item = self.doneList[idx];
+                    $.post('todo/unfinish/' + item.id, function(data) {
+                        self.doneList.$remove(item);
+                        self.todoList.push(data);
+                    })
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>

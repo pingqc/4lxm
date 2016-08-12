@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        #main {
+            width: 100vw;
+            height: 100vh;
+        }
+        a {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+<a href="dym.html" class="btn">点我去老的大姨妈网页</a>
+<div id="main">
+</div>
+<script src="static/js/jquery.min.js"></script>
+<script src="static/js/moment.js"></script>
+<script src="http://cdn.bootcss.com/echarts/3.2.2/echarts.min.js"></script>
+<script>
+    $(function() {
+        var myChart = echarts.init(document.getElementById('main'));
+        option = {
+            title : {
+                text: "这里可以看到距离上次大姨妈隔了多久"
+            },
+            color: ['#3398DB'],
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            grid: {
+//                left: '3%',
+//                right: '4%',
+//                bottom: '3%',
+//                containLabel: true
+            },
+            xAxis : [
+                {
+                    type : 'category',
+                    data : []
+                }
+            ],
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            series : [
+                {
+                    name:'直接访问',
+                    type:'bar',
+//                    barWidth: '60%',
+                    data:[]
+                }
+            ]
+        };
+        $.get('dym/data', function(data) {
+            var now = moment().format('YYYY-MM-DD');
+            if (data.length > 0 && data[data.length - 1].date !== now) {
+                data.push({
+                    date : now
+                })
+            }
+            var i = 1;
+            for (; i < data.length; i++) {
+                var date1 = moment(data[i - 1].date);
+                var date2 = moment(data[i].date);
+                option.xAxis[0].data.push(data[i].date);
+                var days = Math.abs(date1.diff(date2, 'days'));
+                option.series[0].data.push(days);
+            }
+            myChart.setOption(option);
+        });
+    });
+</script>
+</body>
+</html>

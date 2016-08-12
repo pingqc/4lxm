@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <!-- HTTP 1.1 -->
+    <meta http-equiv="pragma" content="no-cache">
+    <!-- HTTP 1.0 -->
+    <meta http-equiv="cache-control" content="no-cache">
+    <title>大姨妈来访登记表</title>
+
+    <script type="text/javascript" src="static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="static/datetimepicker/js/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript">
+        $(function( ) {
+
+            $("#date").datetimepicker({
+                format : 'yyyy-mm-dd',
+                autoclose: true,
+                minView : 3
+            });
+
+            function initTimeLine(data) {
+                $("body .timeline").remove();
+                var currYear = 2000;
+                var $timeline = $('<div class="timeline"></div>');
+                var $timelineDate;
+                var $ul;
+                var cnt = 0;
+                for (var i = 0; i < data.length; i++) {
+                    var date = new Date(data[i].date);
+                    if (currYear != date.getFullYear()) {
+                        currYear = date.getFullYear();
+                        $timelineDate = $('<div class="timeline-date"></div>');
+                        $ul = $('<ul></ul>');
+                        $ul.appendTo($timelineDate);
+                        $timelineDate.appendTo($timeline);
+                        cnt = 0;
+                    }
+                    if (cnt++ === 0) {
+                        $ul.append('<h2 class="second" style="position: relative;"><span>'+currYear+'年</span></h2>');
+                    }
+                    var month = date.getMonth() + 1;
+                    var day = date.getDate();
+                    $ul.append('<li><h3>'+month+ '.' + day + '<span>'+currYear+'</span></h3><dl class="right"><span>大姨妈来啦~</span></dl></li>')
+                }
+                $timeline.appendTo($('body'));
+            }
+
+            $.get('dym/data', function(data) {
+                initTimeLine(data);
+            });
+
+            var date = new Date();
+            var $input = $("input[type=date]");
+            $input.val(date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate());
+            $("#recordBtn").click(function() {
+                var dateStr = $input.val();
+                $.post('dym/add', {date: dateStr},function(data) {
+                    initTimeLine(data);
+                });
+            });
+        });
+    </script>
+
+    <!--<link rel="stylesheet" type="text/css" href="static/bootstrap-3.3.5/css/bootstrap.css">-->
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="static/datetimepicker/css/bootstrap-datetimepicker.css">
+    <link rel="stylesheet" type="text/css" href="static/css/dym.css">
+
+</head>
+<body>
+<div class="edit"><input readonly="readonly" type="date" id="date"/><button id="recordBtn">登记</button></div>
+<!--<div class="timeline">-->
+    <!--<div class="timeline-date">-->
+        <!--<ul>-->
+            <!--<h2 class="second" style="position: relative;">-->
+                <!--<span>2013年</span>-->
+            <!--</h2>-->
+            <!--<li>-->
+                <!--<h3>09.03<span>2013</span></h3>-->
+                <!--<dl class="right">-->
+                    <!--<span>时间轴就要成功了！</span>-->
+                <!--</dl>-->
+            <!--</li>-->
+            <!--<li>-->
+                <!--<h3>08.15<span>2013</span></h3>-->
+                <!--<dl class="right">-->
+                    <!--<span>为了时间轴奋斗吧！</span>-->
+                <!--</dl>-->
+            <!--</li>-->
+        <!--</ul>-->
+    <!--</div>-->
+<!--</div>-->
+</body>
+</html>
