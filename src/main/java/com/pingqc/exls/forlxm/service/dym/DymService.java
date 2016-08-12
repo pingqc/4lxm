@@ -1,13 +1,16 @@
 package com.pingqc.exls.forlxm.service.dym;
 
-import com.pingqc.exls.forlxm.dao.dym.DymDao;
-import com.pingqc.exls.forlxm.domain.DymRecord;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.pingqc.exls.forlxm.dao.dym.DymRecordDao;
+import com.pingqc.exls.forlxm.model.DymRecord;
 
 /**
  * Created by pingqc on 16/3/28.
@@ -16,28 +19,27 @@ import java.util.List;
 public class DymService {
 
     @Autowired
-    DymDao dymDao;
+    DymRecordDao dymRecordDao;
 
     public List<DymRecord> queryAll() {
-        return dymDao.queryAll();
+        return dymRecordDao.findAll();
     }
 
-    public void add(String date) {
-        if (dymDao.queryByDate(date) == null) {
-            dymDao.add(date);
+    public void add(Date date) {
+        Optional<DymRecord> optional = dymRecordDao.findByDate(date);
+        if (!optional.isPresent()) {
+            DymRecord record = new DymRecord();
+            record.setDate(date);
+            dymRecordDao.save(record);
         }
     }
 
-    /**
-     * 距离上一次dym来的天数
-     * @return
-     */
     public int daysFromLastDymComes() {
-        DymRecord record = dymDao.getNewestOne();
-        if (record == null) {
+        Optional<DymRecord> record = dymRecordDao.getNewestOne();
+        if (!record.isPresent()) {
             return 0;
         }
-        DateTime d1 = new DateTime(record.getDate());
+        DateTime d1 = new DateTime(record.get().getDate());
         DateTime d2 = new DateTime(System.currentTimeMillis());
         return Days.daysBetween(d1, d2).getDays();
     }

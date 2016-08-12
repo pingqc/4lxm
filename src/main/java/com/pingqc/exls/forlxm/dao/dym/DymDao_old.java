@@ -1,6 +1,10 @@
 package com.pingqc.exls.forlxm.dao.dym;
 
-import com.pingqc.exls.forlxm.domain.DymRecord;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -8,15 +12,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
+import com.pingqc.exls.forlxm.model.DymRecord;
 
 /**
  * Created by pingqc on 16/3/28.
  */
 @Repository
-public class DymDao {
+public class DymDao_old {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -41,10 +43,10 @@ public class DymDao {
         });
     }
 
-    public DymRecord queryByDate(String date) {
+    public Optional<DymRecord> queryByDate(String date) {
         final String SQL = "SELECT ID, DATE FROM LXM_DYM WHERE DATE = ?";
         try {
-            return jdbcTemplate.queryForObject(SQL, new Object[]{date}, new RowMapper<DymRecord>() {
+            DymRecord dymRecord = jdbcTemplate.queryForObject(SQL, new Object[]{date}, new RowMapper<DymRecord>() {
                 @Override
                 public DymRecord mapRow(ResultSet rs, int rowNum) throws SQLException {
                     DymRecord bean = new DymRecord();
@@ -53,9 +55,10 @@ public class DymDao {
                     return bean;
                 }
             });
+            return Optional.ofNullable(dymRecord);
         } catch (DataAccessException e) {
             if (e instanceof EmptyResultDataAccessException) {
-                return null;
+                return Optional.empty();
             } else {
                 throw e;
             }

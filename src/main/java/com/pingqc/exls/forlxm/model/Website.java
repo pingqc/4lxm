@@ -1,12 +1,19 @@
-package com.pingqc.exls.forlxm.domain;
+package com.pingqc.exls.forlxm.model;
 
 import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Created by pingqc on 16/4/2.
  */
+@Entity
+@Table(name = "LXM_WEBSITE")
 public class Website implements Serializable {
 
+    @Id
     private int id;
     private String url;
     private String name;

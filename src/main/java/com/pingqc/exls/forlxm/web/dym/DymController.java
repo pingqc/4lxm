@@ -1,16 +1,16 @@
 package com.pingqc.exls.forlxm.web.dym;
 
-import com.pingqc.exls.forlxm.domain.DymRecord;
-import com.pingqc.exls.forlxm.service.dym.DymService;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.List;
+import com.pingqc.exls.forlxm.model.DymRecord;
+import com.pingqc.exls.forlxm.service.dym.DymService;
 
 /**
  * Created by pingqc on 16/3/28.
@@ -27,14 +27,9 @@ public class DymController {
         return dymService.queryAll();
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public List<DymRecord> record(String date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            sdf.parse(date);
-            dymService.add(date);
-        } catch (ParseException e) {
-        }
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    public List<DymRecord> record(Date date) {
+        dymService.add(date);
         return dymService.queryAll();
     }
 

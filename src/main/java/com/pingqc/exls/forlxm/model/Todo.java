@@ -1,22 +1,29 @@
-package com.pingqc.exls.forlxm.domain;
+package com.pingqc.exls.forlxm.model;
 
 import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.pingqc.exls.forlxm.domain.TodoStatus;
 
 /**
  * Created by pingqc on 16/4/12.
  */
+@Entity
+@Table(name = "LXM_TODOS")
 public class Todo implements Serializable {
 
+    @Id
     private int id;
     private String content;
     private Long createTime;
     private Long finishTime;
-    /**
-     * 0-todo
-     * 1-done
-     * 2-canceled
-     */
-    private int status;
+    @Enumerated(EnumType.ORDINAL)
+    private TodoStatus status;
 
     public int getId() {
         return id;
@@ -50,11 +57,11 @@ public class Todo implements Serializable {
         this.finishTime = finishTime;
     }
 
-    public int getStatus() {
+    public TodoStatus getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(TodoStatus status) {
         this.status = status;
     }
 }

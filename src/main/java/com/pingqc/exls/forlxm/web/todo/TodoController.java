@@ -1,12 +1,16 @@
 package com.pingqc.exls.forlxm.web.todo;
 
-import com.pingqc.exls.forlxm.domain.Todo;
-import com.pingqc.exls.forlxm.service.todo.TodoService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.pingqc.exls.forlxm.model.Todo;
+import com.pingqc.exls.forlxm.service.todo.TodoService;
 
 /**
  * Created by pingqc on 16/4/12.
@@ -31,20 +35,17 @@ public class TodoController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Todo update(int id, String content) {
-        todoService.update(id, content);
-        return todoService.getOne(id);
+        return todoService.update(id, content);
     }
 
     @RequestMapping(value = "/finish/{id}", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE ,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Todo finish(@PathVariable("id") int id) {
-        todoService.finish(id);
-        return todoService.getOne(id);
+        return todoService.finish(id);
     }
 
     @RequestMapping(value = "/unfinish/{id}", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE ,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Todo unfinish(@PathVariable("id") int id) {
-        todoService.unfinish(id);
-        return todoService.getOne(id);
+        return todoService.unfinish(id);
     }
 
     @RequestMapping(value = "/cancel/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
