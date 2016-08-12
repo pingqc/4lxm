@@ -2,6 +2,7 @@ package com.pingqc.exls.forlxm.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -14,21 +15,22 @@ import javax.persistence.Table;
 public class Website implements Serializable {
 
     @Id
-    private int id;
+    private long id;
     private String url;
     private String name;
     private String ico;
     private int seqNo;
+    @Column(name = "`key`")
     private String key;
     private String type;
     private long createTime;
     private boolean editable;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

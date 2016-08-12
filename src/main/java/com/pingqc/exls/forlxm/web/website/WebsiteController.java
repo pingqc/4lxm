@@ -55,7 +55,7 @@ public class WebsiteController {
             method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
-    public Object remove(@PathVariable("id") int id) {
+    public Object remove(@PathVariable("id") long id) {
         websiteService.remove(id);
         return "{\"result\":\"success\"}";
     }
