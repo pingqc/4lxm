@@ -19,7 +19,7 @@ public class Website implements Serializable {
     private String url;
     private String name;
     private String ico;
-    private int seqNo;
+    private Integer seqNo;
     @Column(name = "`key`")
     private String key;
     private String type;
