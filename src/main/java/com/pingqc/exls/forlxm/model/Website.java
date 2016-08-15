@@ -23,7 +23,7 @@ public class Website implements Serializable {
     @Column(name = "`key`")
     private String key;
     private String type;
-    private long createTime;
+    private Long createTime;
     private boolean editable;
 
     public long getId() {
@@ -82,11 +82,11 @@ public class Website implements Serializable {
         this.type = type;
     }
 
-    public long getCreateTime() {
+    public Long getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(long createTime) {
+    public void setCreateTime(Long createTime) {
         this.createTime = createTime;
     }
 

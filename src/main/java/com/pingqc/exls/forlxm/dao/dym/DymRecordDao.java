@@ -19,4 +19,5 @@ public interface DymRecordDao extends JpaRepository<DymRecord, Long> {
 
 	@Query(value = "SELECT * FROM LXM_DYM ORDER BY DATE DESC LIMIT 1", nativeQuery = true)
 	Optional<DymRecord> getNewestOne();
+
 }
