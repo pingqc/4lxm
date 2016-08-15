@@ -58,11 +58,11 @@ public class Website implements Serializable {
         this.ico = ico;
     }
 
-    public int getSeqNo() {
+    public Integer getSeqNo() {
         return seqNo;
     }
 
-    public void setSeqNo(int seqNo) {
+    public void setSeqNo(Integer seqNo) {
         this.seqNo = seqNo;
     }
 
