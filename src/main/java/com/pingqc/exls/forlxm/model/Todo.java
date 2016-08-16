@@ -8,6 +8,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pingqc.exls.forlxm.domain.TodoStatus;
 
 /**
@@ -23,6 +24,7 @@ public class Todo implements Serializable {
     private Long createTime;
     private Long finishTime;
     @Enumerated(EnumType.ORDINAL)
+    @JsonProperty()
     private TodoStatus status;
 
     public int getId() {

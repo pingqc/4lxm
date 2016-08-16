@@ -2,6 +2,7 @@ package com.pingqc.exls.forlxm.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,6 +13,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "LXM_WEBSITE")
+@Cacheable()
 public class Website implements Serializable {
 
     @Id

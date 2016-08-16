@@ -106,9 +106,9 @@
                                       '</div>');
                         $item.data('data', item);
 
-                        if (item.status === 0) { // TodoItem
+                        if (item.status === 'TODO') { // TodoItem
                             $todo.append($item);
-                        } else if (item.status === 1) { // DoneItem
+                        } else if (item.status === 'DONE') { // DoneItem
                             $done.append($item);
                         }
                     }

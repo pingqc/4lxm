@@ -1,4 +1,4 @@
-package com.pingqc.exls.forlxm.web.dym;
+package com.pingqc.exls.forlxm.web.tool;
 
 import java.util.Date;
 import java.util.List;
@@ -28,7 +28,7 @@ public class DymController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public List<DymRecord> record(Date date) {
+        public List<DymRecord> record(Date date) {
         dymService.add(date);
         return dymService.queryAll();
     }

@@ -1,18 +1,19 @@
 package com.pingqc.exls.forlxm;
 
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+
+import com.pingqc.exls.forlxm.dao.website.WebsiteDao;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = DemoApplication.class)
 @WebAppConfiguration
 public class DemoApplicationTests {
 
-	@Test
-	public void contextLoads() {
-	}
+	@Autowired
+	WebsiteDao websiteDao;
 
 }

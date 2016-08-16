@@ -10,5 +10,4 @@ import com.pingqc.exls.forlxm.model.Website;
  */
 @Repository
 public interface WebsiteDao extends JpaRepository<Website, Long> {
-
 }
