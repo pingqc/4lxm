@@ -28,6 +28,7 @@ public class WebsiteService {
 
     // @CacheEvict(value = "website", allEntries = true)
     public void add(Website site) {
+        site.setCreateTime(System.currentTimeMillis());
         websiteDao.save(site);
     }
 

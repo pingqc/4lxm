@@ -115,7 +115,7 @@
 					var now = moment();
 
 					var $box = $('.nav-box');
-					$box.find('.clear-both, .nav-item').remove();
+					$box.find('.clear-both, .nav-item, p').remove();
 					var preType = "";
 
 					// 保存网址类型
@@ -130,7 +130,7 @@
 
 						var d = now.diff(moment(data[i].createTime), 'days');
 						var newItemClass = (d > 7) ? '' : 'nav-item-new'; // 7天以内的特别标记
-						var roItemClass = (d > 7) ? '' : 'nav-item-ro'; // readonly
+						var roItemClass = data[i].editable ? '' : 'nav-item-ro'; // readonly
 
 						var displayTxt = data[i].name;
 						if (data[i].url === 'dym.html') {
@@ -166,7 +166,7 @@
 
 			$('.nav-box').on('click', '.nav-item .nav-del', function() {
 				var navInfo = $(this).closest('.nav-item').data('data');
-				if (navInfo.editable === true) {
+				if (navInfo.editable === false) {
 					alert('不准动!!!!');
 					return;
 				}
@@ -180,7 +180,7 @@
 			});
 			$('.nav-box').on('click', '.nav-item .nav-edit', function() {
 				var navInfo = $(this).closest('.nav-item').data('data');
-				if (navInfo.editable === true) {
+				if (navInfo.editable === false) {
 					alert('不准动!!!!');
 					return;
 				}
@@ -231,12 +231,16 @@
 			});
 			$("#saveNavBtn").click(function() {
 				var id = $('input[name=id]').val();
+        var type = $('input[name=type]').val();
+        if (type == "") {
+          type = $("select[name=types]").val();
+        }
 				var siteInfo = {
 					id  : id,
 					url : $('input[name=url]').val(),
 					name: $('input[name=name]').val(),
 					ico : $('input[name=ico]').val(),
-					type: $('input[name=type]').val()
+					type: type
 				}
 				if (id) { // update
 					$.post('website/update', siteInfo, function(data) {
