@@ -4,6 +4,8 @@ cd ~/tmp
 if [ -d 4lxm/.git ]; then
     echo "project is alreay in version control, now exec git pull"
     cd 4lxm
+    # cancel local changes
+    git checkout .
     git pull origin master
 else
     echo "no project found, now exec git clone"

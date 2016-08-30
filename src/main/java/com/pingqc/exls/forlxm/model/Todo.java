@@ -19,7 +19,7 @@ import com.pingqc.exls.forlxm.domain.TodoStatus;
 public class Todo implements Serializable {
 
     @Id
-    private int id;
+    private Integer id;
     private String content;
     private Long createTime;
     private Long finishTime;
@@ -27,11 +27,11 @@ public class Todo implements Serializable {
     @JsonProperty()
     private TodoStatus status;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

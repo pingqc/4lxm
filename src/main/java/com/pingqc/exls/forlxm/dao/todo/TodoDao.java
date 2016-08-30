@@ -20,7 +20,7 @@ import com.pingqc.exls.forlxm.model.Todo;
  * Created by pingqc on 16/4/12.
  */
 @Repository
-public interface TodoDao extends JpaRepository<Todo, Long> {
+public interface TodoDao extends JpaRepository<Todo, Integer> {
 
     @Query("from Todo where status != 2 order by createTime, finishTime")
     List<Todo> queryAll();
