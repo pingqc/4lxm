@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>标签</title>
+    <link rel="stylesheet" href="../static/bootstrap-3.3.5/css/bootstrap.css">
+    <link rel="stylesheet" href="../static/css/tag.css">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div id="tags" class="tags">
+                <!--<div class="tag" data-tagid="1" style="background-color: #2aabd2; color: #000;">-->
+                    <!--<span class="name">西湖</span><span class="num">(0)</span>-->
+                <!--</div>-->
+                <div class="tag add-tag" data-tagid="1" style="background-color: #2aabd2; color: #000;">
+                    <span class="name">+</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editTagModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">编辑标签</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-inline" role="form">
+                    <input type="hidden" name="id">
+                    <div class="form-group">
+                        <label for="tagName" class="sr-only">名称</label>
+                        <input type="text" class="form-control" name="name" id="tagName" placeholder="标签名称">
+                    </div>
+                    <div class="form-group">
+                        <label for="tagBgcolor" class="sr-only">背景色</label>
+                        <input type="text" class="form-control" maxlength="7" name="bgcolor" id="tagBgcolor" placeholder="背景颜色">
+                    </div>
+                    <div class="form-group">
+                        <label for="tagColor" class="sr-only">前景色</label>
+                        <input type="text" class="form-control" maxlength="7" name="color" id="tagColor" placeholder="前景颜色">
+                    </div>
+                    <a class="btn btn-success">确定</a>
+                    <a class="btn btn-default" data-dismiss="modal">取消</a>
+                </form>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script type="text/javascript" src="../static/js/jquery.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $(function() {
+        $.get("../tags", function(tags) {
+            var $box = $("#tags");
+            var $tags = $box.find(".tag").not(".add-tag");
+            $tags.remove();
+            for (var i = 0; i < tags.length; i++) {
+                var style = "background-color: " + tags[i].bgcolor + "; color: " + tags[i].color;
+                var $tag = $("<span>", {
+                    "id"   : "tag-" + tags[i].id,
+                    "class": "tag",
+                    "style": style
+                });
+                var $name = $("<span class='name'>"+tags[i].name+"</span>")
+                var $num = $("<span class='num'>(0)</span>")
+                $tag.append($name).append($num).appendTo($box);
+            }
+            getStatistics();
+        });
+
+        function getStatistics() {
+            $.get("../tags/statistics", function(data) {
+                for (id in data) {
+                    $("#tag-" + id + " .num").text("(" + data[id] + ")");
+                }
+            });
+        }
+
+        $("#tags .add-tag").click(function() {
+            $("#editTagModal").find('.modal-title').text("添加标签");
+            $("#editTagModal").modal();
+        });
+
+        // 添加标签
+
+
+    });
+</script>
+</body>
+</html>

@@ -5,7 +5,10 @@ package com.pingqc.exls.forlxm.domain;
  */
 public class AjaxResp {
 
-    private String result;
+    public static final String SUCCESS = "success";
+    public static final String FAILED = "failed";
+
+    private String result = SUCCESS;
     private int code;
     private String msg;
 

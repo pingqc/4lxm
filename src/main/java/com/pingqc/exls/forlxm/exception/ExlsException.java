@@ -24,4 +24,11 @@ public class ExlsException extends RuntimeException {
         super(msg, e);
     }
 
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
 }

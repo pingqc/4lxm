@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>memory</title>
+    <link rel="stylesheet" href="../static/bootstrap-3.3.5/css/bootstrap.css">
+    <link rel="stylesheet" href="../static/css/photo.css">
+    <link rel="stylesheet" href="../static/css/normalize.css">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12" id="photos">
+            <!--<div class="photo">-->
+                <!--<img src="http://7nj3c7.com1.z0.glb.clouddn.com/1459602921525.jpg" alt="">-->
+                <!--<div class="tags">-->
+                    <!--<div><span class="tag">tag1</span></div>-->
+                    <!--<div><span class="tag">tag1</span></div>-->
+                    <!--<div><span class="tag">adfasdf</span></div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="photo no-border">
+                <p class="more-link">More</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../static/js/jquery.min.js"></script>
+<script>
+    $(function() {
+        $.get("../photo/qiniu", function (data) {
+            for (var i = 0; i < data.length; i++) {
+                $("<img src='http://7nj3c7.com1.z0.glb.clouddn.com/"+data[i].key+"'>").appendTo($("body"));
+            }
+        })
+    });
+</script>
+</body>
+</html>

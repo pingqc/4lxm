@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>memory</title>
+    <link rel="stylesheet" href="../static/bootstrap-3.3.5/css/bootstrap.css">
+    <link rel="stylesheet" href="../static/css/photo.css">
+    <link rel="stylesheet" href="../static/css/normalize.css">
+</head>
+<body>
+<header class="navbar navbar-fixed-top navbar-inverse" role="banner">
+    <div class="container">
+        <div class="navbar-header">
+            <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="../" class="navbar-brand">TITLE</a>
+        </div>
+        <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+            <ul class="nav navbar-nav">
+                <li>
+                    <a href="#">相册</a>
+                </li>
+                <li>
+                    <a href="../css/">随机</a>
+                </li>
+                <li>
+                    <a href="tags.html">标签</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="../javascript/">管理</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12" id="photos">
+            <!--<div class="photo">-->
+                <!--<img src="http://7nj3c7.com1.z0.glb.clouddn.com/1459602921525.jpg" alt="">-->
+                <!--<div class="tags">-->
+                    <!--<div><span class="tag">tag1</span></div>-->
+                    <!--<div><span class="tag">tag1</span></div>-->
+                    <!--<div><span class="tag">adfasdf</span></div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="photo no-border">
+                <p class="more-link">More</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../static/js/jquery.min.js"></script>
+<script>
+    $(function() {
+        var domain = "http://7nj3c7.com1.z0.glb.clouddn.com/";
+        var page = 1;
+        var $photos = $("#photos");
+        var loadPage = function() {
+            var $moreLink = $("#photos .more-link");
+            $moreLink.text("Loading...")
+            $.get('../photo/page/' + (page++), function(data) {
+                $moreLink.text("More");
+                var photos = data.content;
+                var $moreLinkDiv = $moreLink.parent(".photo");
+                if (photos.length === 0) {
+                    $moreLinkDiv.remove();
+                    return;
+                }
+
+                for (var i = 0; i < photos.length; i++) {
+                    var $photo = $("<div class='photo'>");
+                    var $img = $("<img>", {
+                        src: domain + photos[i].path
+                    });
+                    var tags = photos[i].tags;
+                    var $tags = $("<div class='tags'>");
+                    for (var j = 0; j < tags.length; j++) {
+                        var style = "background-color:" + tags[j].bgcolor + "; color:" + tags[j].color;
+                        var $tag = $("<div><span class='tag' style='"+style+"'>"+tags[j].name+"</span></div>");
+                        $tags.append($tag);
+                    }
+                    $photo.append($img);
+                    $photo.append($tags);
+                    $moreLinkDiv.before($photo);
+                }
+
+            })
+        };
+
+        $(".more-link").click(function () {
+           loadPage();
+        });
+
+        loadPage();
+
+    });
+</script>
+</body>
+</html>
